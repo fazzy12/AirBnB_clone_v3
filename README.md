@@ -156,6 +156,6 @@ No known bugs at this time.
 ## Authors
 * Ifeanyi kalu - [Github](https://github.com/fazzy12)
 * felix essienne - [Github](https://github.com/jhuang10123)
-Second part of Airbnb: Joann Vuong
+
 ## License
 Public Domain. No copy write protection. 
