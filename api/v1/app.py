@@ -2,7 +2,7 @@
 """API setup and configuration"""
 
 import os
-from flask import Flask, jsonify
+from flask import Flask, jsonify, abort
 from flask_cors import CORS
 
 from models import storage
@@ -17,6 +17,12 @@ app.register_blueprint(app_views)
 def teardown_flask(exception):
     """ The Flask app/request context end event listener. """
     storage.close()
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    """ 404 error handler. """
+    return jsonify(error="not found"), 404
 
 
 if __name__ == '__main__':
