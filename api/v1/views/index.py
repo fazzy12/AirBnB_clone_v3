@@ -1,11 +1,11 @@
 #!/usr/bin/python3
-""" Index route for API v1 """
-
+'''Contains the index view for the API.'''
 from flask import jsonify
 from api.v1.views import app_views
+from models import storage
 
 
 @app_views.route('/status', methods=['GET'], strict_slashes=False)
-def get_status():
-    """ Return API status """
-    return jsonify({"status": "OK"})
+def status():
+    """ Returns JSON """
+    return jsonify(status="OK")
