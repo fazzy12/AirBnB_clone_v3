@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-""" API setup and configuration """
+"""API setup and configuration"""
 
 import os
 from flask import Flask, jsonify
