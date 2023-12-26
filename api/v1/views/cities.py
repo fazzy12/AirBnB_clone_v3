@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-"""Module for City views"""
+"""Contains the cities view for the API.
+"""
 from api.v1.views import app_views
 from flask import jsonify, abort, request
 from models import storage, State, City
