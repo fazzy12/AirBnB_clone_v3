@@ -2,15 +2,9 @@
 """Contains the places_amenities view for the API."""
 
 
-from flask import jsonify, request, abort
+from flask import Flask, jsonify, request, abort
 from models import Review, Place, User
 from api.v1.views import app_views
-from flask import abort, jsonify, request
-from api.v1.views import app_views
-from models import storage
-from models.city import City
-from models.place import Place
-from models.user import User
 
 
 @app_views.route('/places/<place_id>/reviews',
