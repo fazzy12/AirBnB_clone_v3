@@ -13,7 +13,7 @@ from models.user import User
 @app_views.route('/places/<place_id>/reviews',
                  methods=['GET'], strict_slashes=False)
 def get_reviews_by_place(place_id):
-    place = Place.get(place_id)
+    place = Place.get(place, place_id)
     if not place:
         abort(404)
     return jsonify([review.to_dict() for review in place.reviews])
