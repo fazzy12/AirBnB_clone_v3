@@ -1,8 +1,9 @@
 #!/usr/bin/python3
-"""Contains the places_amenities view for the API."""
+"""Contains the places_amenities view for the API.
+"""
 
 
-from flask import Flask, jsonify, request, abort
+from flask import jsonify, request, abort
 from models import Review, Place, User
 from api.v1.views import app_views
 
