@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """user model for the project"""
-from hashlib import md5
+import hashlib
 import models
 from models.base_model import BaseModel, Base
 from os import getenv
@@ -29,12 +29,8 @@ class User(BaseModel, Base):
         """initializes user"""
         super().__init__(*args, **kwargs)
 
-    @property
-    def password(self):
-        """Getter for password."""
-        return self._password
-
-    @password.setter
-    def password(self, value):
-        """Setter for password."""
-        self._password = md5(value.encode()).hexdigest()
+    def __setattr__(self, key, value):
+        """sets user pasword"""
+        if key == "password":
+            value = hashlib.md5(value.encode()).hexdigest()
+        super().__setattr__(key, value)
