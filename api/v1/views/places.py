@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """Places view module"""
+
 from flask import abort, jsonify, make_response, request
 import requests
 from api.v1.views import app_views
