@@ -63,7 +63,7 @@ class BaseModel:
     def to_dict(self):
         """returns a dictionary containing all keys/values of the instance"""
         new_dict = self.__dict__.copy()
-        
+
         # Remove 'password' key except when used by FileStorage
         if 'password' in new_dict and models.storage_t != 'db':
             del new_dict['password']
