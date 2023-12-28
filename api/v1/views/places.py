@@ -18,7 +18,8 @@ HBNB_API_PORT = getenv('HBNB_API_PORT')
 @app_views.route('/places_search', methods=['POST'], strict_slashes=False)
 def places_search():
     """
-    Retrieves all Place objects depending on the JSON in the body of the request.
+    Retrieves all Place objects depending on the
+    JSON in the body of the request.
     """
     req_json = request.get_json()
 
@@ -33,13 +34,15 @@ def places_search():
     places = []
 
     if req_json.get('states'):
-        obj_states = [storage.get(State, state_id) for state_id in req_json['states']]
+        obj_states = [storage.get(State, state_id)
+                      for state_id in req_json['states']]
         for obj_state in obj_states:
             for obj_city in obj_state.cities:
                 places.extend(obj_city.places)
 
     if req_json.get('cities'):
-        obj_cities = [storage.get(City, city_id) for city_id in req_json['cities']]
+        obj_cities = [storage.get(City, city_id)
+                      for city_id in req_json['cities']]
         for obj_city in obj_cities:
             places.extend(obj_city.places)
 
@@ -47,10 +50,13 @@ def places_search():
         places = storage.all(Place).values()
 
     if req_json.get('amenities'):
-        obj_amenities = [storage.get(Amenity, amenity_id) for amenity_id in req_json['amenities']]
-        places = [place for place in places if all(amenity in place.amenities for amenity in obj_amenities)]
+        obj_amenities = [storage.get(Amenity, amenity_id)
+                         for amenity_id in req_json['amenities']]
+        places = [place for place in places if all(
+            amenity in place.amenities for amenity in obj_amenities)]
 
     return jsonify([obj.to_dict() for obj in places])
+
 
 @app_views.route('/cities/<city_id>/places',
                  methods=['GET'], strict_slashes=False)
