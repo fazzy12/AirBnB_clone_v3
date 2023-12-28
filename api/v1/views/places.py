@@ -7,33 +7,50 @@ from models import storage
 from models.city import City
 from models.place import Place
 from models.user import User
+from flask import abort, jsonify, request
+from api.v1.views import app_views
+from models import storage, State, City, Amenity, Place
+from os import getenv
+
+HBNB_API_PORT = getenv('HBNB_API_PORT')
 
 
 @app_views.route('/places_search', methods=['POST'], strict_slashes=False)
 def places_search():
-    """Search for places based on criteria"""
-    criteria = request.get_json()
+    """
+    Retrieves all Place objects depending on the JSON in the body of the request.
+    """
+    req_json = request.get_json()
 
-    if not criteria:
-        abort(400, "Not a JSON")
+    if req_json is None or (
+        not req_json.get('states') and
+        not req_json.get('cities') and
+        not req_json.get('amenities')
+    ):
+        obj_places = storage.all(Place)
+        return jsonify([obj.to_dict() for obj in obj_places.values()])
 
-    places = storage.all(Place).values()
+    places = []
 
-    if 'states' in criteria:
-        states = criteria['states']
-        places = [p for p in places if p.city.state_id in states]
+    if req_json.get('states'):
+        obj_states = [storage.get(State, state_id) for state_id in req_json['states']]
+        for obj_state in obj_states:
+            for obj_city in obj_state.cities:
+                places.extend(obj_city.places)
 
-    if 'cities' in criteria:
-        cities = criteria['cities']
-        places = [p for p in places if p.city_id in cities]
+    if req_json.get('cities'):
+        obj_cities = [storage.get(City, city_id) for city_id in req_json['cities']]
+        for obj_city in obj_cities:
+            places.extend(obj_city.places)
 
-    if 'amenities' in criteria:
-        amenities = criteria['amenities']
-        places = [p for p in places if all(
-            amenity_id in [a.id for a in p.amenities] for amenity_id in amenities)]
+    if not places:
+        places = storage.all(Place).values()
 
-    return jsonify([place.to_dict() for place in places]), 200
+    if req_json.get('amenities'):
+        obj_amenities = [storage.get(Amenity, amenity_id) for amenity_id in req_json['amenities']]
+        places = [place for place in places if all(amenity in place.amenities for amenity in obj_amenities)]
 
+    return jsonify([obj.to_dict() for obj in places])
 
 @app_views.route('/cities/<city_id>/places',
                  methods=['GET'], strict_slashes=False)
