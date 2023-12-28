@@ -1,43 +1,91 @@
-# API with Swagger
+# AirBnB Clone API (AirBnB_clone_v3)
 
-## Description
+This project is a backend API designed to replicate some functionalities of the popular AirBnB platform. Built on top of Flask, it provides RESTful endpoints to manage various aspects of the application such as users, places, cities, and more.
 
-This Directory contains API files and documenation
+## Table of Contents
+* [Introduction](#Introduction)
+* [Features](#Features)
+* [Setup and Installation](#Setup_and_Installation)
+* [Usage](#Usage)
+* [Endpoints](#Endpoints)
+* [Contributing](#Contributing)
+* [License](#License)
+* [Introduction](#Introduction)
 
-## Environment
+This API project serves as a foundation for an AirBnB-like application. It manages storage, user interactions, and content management through various endpoints and models.
 
-* __OS:__ Ubuntu 14.04 LTS
-* __language:__ Python 3.4.3
-* __application server:__ Flask 0.12.2, Jinja2 2.9.6
-* __web server gateway:__ gunicorn (version 19.7.1)
-* __database:__ mysql Ver 14.14 Distrib 5.7.18
-* __documentation:__ Swagger (flasgger==0.6.6)
-* __Style:__
-  * __python:__ PEP 8 (v. 1.7.0)
+## Features
+CRUD operations for Users, Places, Cities, and more.
+User authentication and authorization.
+Search functionalities based on different criteria.
 
-## Testing API
+## Setup and Installation
+To get started with this project:
 
-* Execute program:
-
-```
-HBNB_MYSQL_USER=hbnb_dev HBNB_MYSQL_PWD=hbnb_dev_pwd \
-HBNB_MYSQL_HOST=localhost HBNB_MYSQL_DB=hbnb_dev_db HBNB_TYPE_STORAGE=db \
-HBNB_API_HOST=0.0.0.0 HBNB_API_PORT=5000 python3 -m api.v1.app
-```
-
-* Testing with Swagger:
-
-  * In browser visit path: `/apidocs` or:
-  * localhost: `http://0.0.0.0:5000/apidocs`
-  * your dowmain: `http://yourdomain/apidocs`
-
-* Testing from CLI:
+1. Clone the repository:
 
 ```
-curl -X GET http://0.0.0.0:5000/api/v1/[YOUR API REQUEST]
+git clone https://github.com/yourusername/AirBnB_clone_v3.git
 ```
 
-example:
+2. Navigate to the project directory:
+
 ```
-curl -X GET http://0.0.0.0:5000/api/v1/states/
+cd AirBnB_clone_v3
 ```
+
+3. Install the required dependencies:
+
+```
+pip install -r requirements.txt
+```
+
+4. Initialize and set up your database:
+
+```
+# Assuming you are using SQLite
+python setup_db.py
+```
+
+5. Run the application:
+
+```
+flask run
+```
+
+## Usage
+After setting up, you can start sending requests to the API using tools like `curl`, Postman, or any other `HTTP` client.
+
+## Endpoints
+**GET** `/cities/<city_id>/places`:
+* **Description**: Retrieve all Place objects for a specific City.
+* **Parameters**: `city_id` - ID of the city for which places are to be retrieved.
+
+**GET** `/places/<place_id>`:
+* **Description**: Retrieve a specific Place object.
+* **Parameters**: `place_id` - ID of the place to be retrieved.
+
+**DELETE** `/places/<place_id>`:
+* **Description**: Delete a specific Place object.
+* **Parameters**: place_id - ID of the place to be deleted.
+
+**POST** `/cities/<city_id>/places`:
+* **Description**: Create a new Place object.
+* **Parameters**: city_id - ID of the city where the place is to be created.
+* **Body**: JSON data containing the details of the new place, including `user_id` and name.
+
+**PUT** `/places/<place_id>`:
+* **Description**: Update a specific Place object.
+* **Parameters**: place_id - ID of the place to be updated.
+* **Body**: JSON data containing the fields to be updated for the place.
+
+**POST** `/places_search`:
+* **Description**: Search and retrieve Place objects based on provided criteria in the request body.
+* **Body**: JSON data containing optional keys like states, cities, and amenities to filter the places.
+
+## Contributing
+Contributions are welcome! Please read the [CONTRIBUTING.md](#) file for details on our code of conduct, and the process for submitting pull requests.
+
+## License
+This project is licensed under the MIT License - see the [LICENSE.md](#) file for details.
+
