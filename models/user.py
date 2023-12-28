@@ -31,10 +31,10 @@ class User(BaseModel, Base):
 
     @property
     def password(self):
-        """ Getter for password """
+        """Getter for password."""
         return self._password
 
     @password.setter
     def password(self, value):
-        """ Setter for password which hashes the password using MD5 """
+        """Setter for password."""
         self._password = md5(value.encode()).hexdigest()
