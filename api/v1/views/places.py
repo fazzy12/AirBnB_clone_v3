@@ -1,5 +1,7 @@
 #!/usr/bin/python3
-"""Places view module"""
+"""
+Places view module
+"""
 
 from flask import abort, jsonify, make_response, request
 import requests
