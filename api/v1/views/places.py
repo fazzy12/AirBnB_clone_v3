@@ -9,6 +9,32 @@ from models.place import Place
 from models.user import User
 
 
+@app_views.route('/places_search', methods=['POST'], strict_slashes=False)
+def places_search():
+    """Search for places based on criteria"""
+    criteria = request.get_json()
+
+    if not criteria:
+        abort(400, "Not a JSON")
+
+    places = storage.all(Place).values()
+
+    if 'states' in criteria:
+        states = criteria['states']
+        places = [p for p in places if p.city.state_id in states]
+
+    if 'cities' in criteria:
+        cities = criteria['cities']
+        places = [p for p in places if p.city_id in cities]
+
+    if 'amenities' in criteria:
+        amenities = criteria['amenities']
+        places = [p for p in places if all(
+            amenity_id in [a.id for a in p.amenities] for amenity_id in amenities)]
+
+    return jsonify([place.to_dict() for place in places]), 200
+
+
 @app_views.route('/cities/<city_id>/places',
                  methods=['GET'], strict_slashes=False)
 def get_places_by_city(city_id):
