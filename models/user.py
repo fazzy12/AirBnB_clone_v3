@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+"""user model for the project"""
 from hashlib import md5
 import models
 from models.base_model import BaseModel, Base
