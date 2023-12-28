@@ -1,6 +1,5 @@
 #!/usr/bin/python3
-"""Places view module"""
-
+'''Contains the places view for the API.'''
 from flask import abort, jsonify, make_response, request
 import requests
 from api.v1.views import app_views
@@ -16,74 +15,82 @@ import json
 from os import getenv
 
 
-
-@app_views.route('/cities/<city_id>/places',
+@app_views.route('cities/<city_id>/places',
                  methods=['GET'], strict_slashes=False)
-def get_places_by_city(city_id):
-    """Retrieve all Place objects for a City"""
-    city = storage.get(City, city_id)
-    if city is None:
+def place(city_id):
+    """Retrieves the list of all Place objects of a City"""
+    obj_city = storage.get(City, city_id)
+    if not obj_city:
         abort(404)
-    return jsonify([place.to_dict() for place in city.places])
+
+    return jsonify([obj.to_dict() for obj in obj_city.places])
 
 
 @app_views.route('/places/<place_id>', methods=['GET'], strict_slashes=False)
-def get_place(place_id):
-    """Retrieve a specific Place object"""
-    place = storage.get(Place, place_id)
-    if place is None:
+def single_place(place_id):
+    """Retrieves a Place object"""
+    obj = storage.get(Place, place_id)
+    if not obj:
         abort(404)
-    return jsonify(place.to_dict())
+    return jsonify(obj.to_dict())
 
 
 @app_views.route('/places/<place_id>',
                  methods=['DELETE'], strict_slashes=False)
-def delete_place(place_id):
-    """Delete a Place object"""
-    place = storage.get(Place, place_id)
-    if place is None:
+def del_place(place_id):
+    """Returns an empty dictionary with the status code 200"""
+    obj = storage.get(Place, place_id)
+    if not obj:
         abort(404)
-    place.delete()
+    obj.delete()
     storage.save()
-    return jsonify({}), 200
+    return make_response(jsonify({}), 200)
 
 
-@app_views.route('/cities/<city_id>/places',
+@app_views.route('cities/<city_id>/places',
                  methods=['POST'], strict_slashes=False)
-def create_place(city_id):
-    """Create a Place object"""
-    city = storage.get(City, city_id)
-    if city is None:
+def post_place(city_id):
+    """Returns the new Place with the status code 201"""
+    obj_city = storage.get(City, city_id)
+    if not obj_city:
         abort(404)
-    req_json = request.get_json()
-    if not req_json:
-        abort(400, "Not a JSON")
-    if "user_id" not in req_json:
+
+    new_place = request.get_json()
+    if not new_place:
+        abort(400, 'Not a JSON')
+    if 'user_id' not in new_place:
         abort(400, "Missing user_id")
-    if storage.get(User, req_json["user_id"]) is None:
+    user_id = new_place['user_id']
+    obj_user = storage.get(User, user_id)
+    if not obj_user:
         abort(404)
-    if "name" not in req_json:
+    if 'name' not in new_place:
         abort(400, "Missing name")
-    new_place = Place(**req_json)
-    new_place.city_id = city_id
-    new_place.save()
-    return jsonify(new_place.to_dict()), 201
+
+    obj = Place(**new_place)
+    setattr(obj, 'city_id', city_id)
+    storage.new(obj)
+    storage.save()
+    return make_response(jsonify(obj.to_dict()), 201)
 
 
 @app_views.route('/places/<place_id>', methods=['PUT'], strict_slashes=False)
-def update_place(place_id):
-    """Update a Place object"""
-    place = storage.get(Place, place_id)
-    if place is None:
+def put_place(place_id):
+    """Returns the Place object with the status code 200"""
+    obj = storage.get(Place, place_id)
+    if not obj:
         abort(404)
-    req_json = request.get_json()
-    if not req_json:
+
+    req = request.get_json()
+    if not req:
         abort(400, "Not a JSON")
-    for key, value in req_json.items():
-        if key not in ['id', 'user_id', 'city_id', 'created_at', 'updated_at']:
-            setattr(place, key, value)
-    place.save()
-    return jsonify(place.to_dict()), 200
+
+    for k, v in req.items():
+        if k not in ['id', 'user_id', 'city_id', 'created_at', 'updated_at']:
+            setattr(obj, k, v)
+
+    storage.save()
+    return make_response(jsonify(obj.to_dict()), 200)
 
 
 @app_views.route('/places_search', methods=['POST'], strict_slashes=False)
